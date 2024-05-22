@@ -1,15 +1,17 @@
 #!/usr/bin/node
 
+/* eslint-disable */
+
 const request = require('request');
-const url = process.argv[2];
-let count = 0;
-request.get(url, (error, response, body) => {
-  if (error) console.log(error);
-  const movie = JSON.parse(body).results;
-  movie.forEach(movie => {
-    movie.characters.forEach(characters => {
-      if (characters.includes('18')) count += 1;
-    });
-  });
-  console.log(count);
+
+const api = `${process.argv[2]}`;
+
+request(api, (err, res, body) => {
+  if (err) throw err;
+  const data = JSON.parse(body).results;
+  const char = [];
+  for (const x in data) {
+    char.push(...data[x]['characters'].filter((str) => str.includes('/18/')));
+  }
+  console.log(char.length);
 });
